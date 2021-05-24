@@ -1,0 +1,71 @@
+<%- include('partials/header'); -%>
+<div class="container fluid m-5 p-5">
+  <div class="row justify-content-center m-5 p-5">
+    <div class="col-lg-6 align-self-center">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="text-center">LOGIN</h4>
+          
+          <form>
+            <div class="mb-3">
+              <div class="email error"></div>
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control input-md" id="email" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+              <div class="password error"></div>
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control input-md" id="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer'); -%>
+
+<script>
+  const check = () => {
+    let a = document.cookie
+    if(a === ''){
+      const form = document.querySelector('form')
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        const email = form.email.value
+        const password = form.password.value
+        const emailError = document.querySelector('.email.error');
+        const passwordError = document.querySelector('.password.error');
+
+        try {
+          const res = await fetch('/user/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+            headers: { 'content-type' : 'application/json' }
+          })
+
+          const data = await res.json()
+          
+          if(data.error){
+            emailError.textContent = data.error.email
+            passwordError.textContent = data.error.password
+          }
+          if(res.status === 200) {
+            location.assign('/dashboard')
+          }
+        } catch (error) {
+          console.log(error)
+        }
+
+      })
+    }else {
+      location.assign('/dashboard')
+    }
+  }
+  check()
+  
+
+</script>

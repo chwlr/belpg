@@ -1,0 +1,103 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-success my-2 p-2" data-bs-toggle="modal" data-bs-target="#add-artikel-modal">
+  Tambah artikel
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="add-artikel-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tambah artikel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="input-judul" class="form-label">Judul</label>
+            <input type="text" class="form-control" id="judul" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="input-tanggal" class="form-label">Tanggal</label>
+            <input type="date" class="form-control" id="tanggal">
+          </div>
+          <div class="mb-3">
+            <label for="input-ringkasan-artikel" class="form-label">Ringkasan artikel</label>
+            <textarea class="form-control" aria-label="With textarea" id="ringkasan"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="input-artikel" class="form-label">Artikel</label>
+            <textarea class="form-control" aria-label="With textarea" id="artikel"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="input-foto" class="form-label">Foto</label>
+            <input class="form-control" type="file" id="foto" name="foto">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="submit-btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const formdash = document.querySelector('form')
+  const btn = document.getElementById("submit-btn")
+
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault()
+    //submit_variable
+
+    const x = await fetch('/user/current', {
+    method: 'GET'
+    })
+    const data = await x.json()
+    const uuid = data.user.uuid
+    
+    const judul = formdash.judul.value
+    const tanggal = formdash.tanggal.value
+    const ringkasan = formdash.ringkasan.value
+    const artikel = formdash.artikel.value
+    const foto = document.getElementById('foto').files[0]
+    const userUuid = uuid
+
+    let formdata = new FormData();
+    formdata.append("judul", judul);
+    formdata.append("tanggal", tanggal);
+    formdata.append("ringkasan", ringkasan);
+    formdata.append("isi", artikel);
+    formdata.append("foto", foto);
+    formdata.append("userUuid", userUuid);
+
+    console.log(foto)
+
+    //error_variable
+    // const emailError = document.querySelector('.email.error');
+    // const passwordError = document.querySelector('.password.error');
+
+    try {
+      
+      const y = await fetch('/artikel', {
+        method: 'POST',
+        body: formdata,
+        mimeType: "multipart/form-data",
+      })
+      console.log(y)
+      const data = await y.json()
+      
+      if(data.error){
+        console.log(data.error)
+      }
+      if(y.status === 201) {
+        location.reload('/dashboard')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+  })
+</script>

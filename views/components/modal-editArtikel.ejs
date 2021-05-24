@@ -1,0 +1,42 @@
+<!-- Modal -->
+<div class="modal fade" id="edit-artikel-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit artikel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="input-judul" class="form-label">Judul</label>
+            <input type="text" class="form-control" id="edit-judul" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="input-tanggal" class="form-label">Tanggal</label>
+            <input type="date" class="form-control" id="edit-tanggal">
+          </div>
+          <div class="mb-3">
+            <label for="input-ringkasan-artikel" class="form-label">Ringkasan artikel</label>
+            <textarea class="form-control" aria-label="With textarea" id="edit-ringkasan"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="input-artikel" class="form-label">Artikel</label>
+            <textarea class="form-control" aria-label="With textarea" id="edit-artikel"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="input-foto" class="form-label">Foto</label>
+            <input class="form-control" type="file" id="edit-foto" name="foto">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="submit-edit">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

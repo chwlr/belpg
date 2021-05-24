@@ -1,0 +1,189 @@
+<%- include('partials/header'); -%>
+<div class="container m-5 p-5">
+  <h4 class="text-center">Dashboard Artikel</h4>
+  <div class="row justify-content-center">
+    <div class="col-lg-12 align-self-center">
+      <%- include('components/modal-addArtikel.ejs'); -%>
+      <div class="card">
+        <div class="card-body">
+          <table id="tabel-artikel" class="table table-striped" style="width:100%">
+            <thead>
+              <tr>
+                  <th>Judul</th>
+                  <th>Tanggal</th>
+                  <th>Ringkasan</th>
+                  <th>Isi</th>
+                  <th>Foto</th>
+                  <th>action</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                <th>Judul</th>
+                <th>Tanggal</th>
+                <th>Ringkasan</th>
+                <th>Isi</th>
+                <th>Foto</th>
+                <th>action</th>
+              </tr>
+          </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('components/modal-editArtikel.ejs'); -%>
+<%- include('components/modal-deleteArtikel.ejs'); -%>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  //GET DATA TO TABLE
+  const getData = async () => {
+    const res = await fetch('/artikel', {
+      method: 'GET'
+    })
+    const data = await res.json()
+    x = data.articles
+
+    $('#tabel-artikel').DataTable({
+      data: x,
+      rowId: 'id',
+      columns: [
+        { data: 'judul', className: "test123"},
+        { data: 'tanggal' },
+        { data: 'ringkasan' },
+        { data: 'isi' },
+        { data: 'foto', "render": function ( data, type, row, meta ) {
+          return '<img src='+data+' width="100%" height="250px"/>';
+        }},
+        {
+            data: "Action",
+            className: "action",
+            orderable: false,
+            searchable: false,
+            render: function (_, __, row) {
+              return `<button
+                id="buttonEdit"
+                data-id=${row.id}
+                class="btn btn-outline-info "
+                data-bs-toggle="modal"
+                data-bs-target="#edit-artikel-modal"
+                onclick="editData(${row.id})"
+              >
+              Edit
+              </button>
+              <button
+                id="buttonDelete"
+                data-id=${row.id}
+                class="btn btn-outline-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#delete-artikel-modal"
+              >
+              Delete
+              </button>`;
+            },
+          }
+    ]
+    });
+
+  }
+  getData()
+
+  //DELETE FUNCTION
+  const subdel = document.getElementById('submit-del')
+  subdel.addEventListener('click', async (e) => {
+    const btndel = document.getElementById('buttonDelete')
+    const dataid = btndel.getAttribute('data-id')
+    try {
+      const res = await fetch(`/artikel/${dataid}`, {
+        method: 'DELETE'
+      })
+      if(res.status === 201) {
+        location.assign('/dashboard')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
+  //EDIT FUNCTION
+  // const subedit = document.getElementById('submit-edit')
+  // subedit.addEventListener('click', async (e) => {
+  //   const btnEdit = document.getElementById('buttonEdit')
+  //   const dataide = btnEdit.getAttribute('data-id')
+  //   console.log(dataide)
+  // })
+  const editData = async (x) => {
+    let param = x
+
+     //variable declaration 
+     const ej = document.getElementById("edit-judul")
+     const et = document.getElementById("edit-tanggal")
+     const er = document.getElementById("edit-ringkasan")
+     const ea = document.getElementById("edit-artikel")
+     const ef = document.getElementById("edit-foto")
+     const se = document.getElementById('submit-edit')
+
+
+    const res = await fetch(`/artikel/${param}`, {
+      method: 'GET'
+    })
+    const data = await res.json()
+    const val = data.article
+
+    ej.value = val.judul
+    et.value = val.tanggal
+    er.value = val.ringkasan
+    ea.value = val.isi
+
+    se.addEventListener('click', async (e) => {
+      e.preventDefault()
+      const x = await fetch('/user/current', {
+        method: 'GET'
+      })
+      const data = await x.json()
+      const uuid = data.user.uuid
+      
+      const judul = ej.value
+      const tanggal = et.value
+      const ringkasan = er.value
+      const artikel = ea.value
+      const foto = ef.files[0]
+      const userUuid = uuid
+
+      let formEdit = new FormData();
+      formEdit.append("judul", judul);
+      formEdit.append("tanggal", tanggal);
+      formEdit.append("ringkasan", ringkasan);
+      formEdit.append("isi", artikel);
+      formEdit.append("foto", foto);
+      formEdit.append("userUuid", userUuid);
+
+      console.log(judul, tanggal, ringkasan, artikel, foto, uuid)
+
+      try {
+        const y = await fetch(`/artikel/${param}`, {
+          method: 'PUT',
+          body: formEdit
+        })
+        console.log(y)
+        const data = await y.json()
+        
+        if(data.error){
+          console.log(data.error)
+        }
+        if(y.status === 201) {
+          location.reload('/dashboard')
+        }
+      } catch (error) {
+          console.log(error)
+        }
+
+    })
+  }
+  
+
+</script>
