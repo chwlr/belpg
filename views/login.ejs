@@ -54,7 +54,7 @@
             passwordError.textContent = data.error.password
           }
           if(res.status === 200) {
-            location.assign('/dashboard')
+            location.assign('/')
           }
         } catch (error) {
           console.log(error)
@@ -62,7 +62,7 @@
 
       })
     }else {
-      location.assign('/dashboard')
+      location.assign('/')
     }
   }
   check()

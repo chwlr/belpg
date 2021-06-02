@@ -21,7 +21,6 @@ app.use(bodyParser.urlencoded({
   limit: '50mb'
 }))
 app.use(express.static('public'))
-app.use('/image', express.static('img'))
 
 //VIEW ENGINE
 app.set('view engine', 'ejs')

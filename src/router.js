@@ -22,16 +22,13 @@ const fileFilter = (req, file, cb) => {
 }
 
 //view routes
-router.get('/', (req, res) => {
-  res.render('home')
+router.get('/', requireAuth, (req, res) => {
+  res.render('dashboard')
 })
 
 router.get('/login', (req, res) => {
   res.render('login')
 })
-
-
-router.get('/dashboard', requireAuth,(req, res) => res.render('dashboard'))
 
 
 
